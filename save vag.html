@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Φόρμα Επικοινωνίας</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+    }
+
+    .contact-box {
+      background-color: white;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-box h2 {
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #copyMessage {
+      display: none;
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #sendButtons {
+      display: none;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    #sendButtons button {
+      width: 48%;
+      margin: 5px 1%;
+      background-color: #28a745;
+    }
+
+    #sendButtons button.viber {
+      background-color: #665cac;
+    }
+  </style>
+</head>
+<body>
+
+<div class="contact-box">
+  <h2>Συμπληρώστε τα στοιχεία σας και ένας εκπρόσωπός μας θα επικοινωνήσει το συντομότερο δυνατό.</h2>
+
+  <label for="service">Επιλέξτε την υπηρεσία που σας ενδιαφέρει</label>
+  <select id="service" name="service">
+    <option value="Ζωή & Μετανάστευση στην Ελβετία">Ζωή & Μετανάστευση στην Ελβετία</option>
+    <option value="Ταξιδιωτικές Υπηρεσίες">Ταξιδιωτικές Υπηρεσίες</option>
+  </select>
+
+  <label for="name">Όνομα</label>
+  <input type="text" id="name" name="name">
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email">
+
+  <label for="phone">Τηλέφωνο</label>
+  <input type="tel" id="phone" name="phone">
+
+  <label for="address">Διεύθυνση</label>
+  <input type="text" id="address" name="address">
+
+  <label for="message">Το μήνυμά σας (προαιρετικό)</label>
+  <textarea id="message" name="message"></textarea>
+
+  <button onclick="processForm()">Αντιγραφή και Εμφάνιση Επιλογών Αποστολής</button>
+
+  <div id="copyMessage">✅ Τα στοιχεία αντιγράφηκαν στο πρόχειρο!</div>
+
+  <div id="sendButtons">
+    <button onclick="sendSMS()">📱 Αποστολή μέσω SMS</button>
+    <button class="viber" onclick="sendViber()">📨 Αποστολή μέσω Viber</button>
+  </div>
+</div>
+
+<script>
+  function processForm() {
+    const service = document.getElementById('service').value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const message = document.getElementById('message').value;
+
+    let text = `ΝΕΟ ΑΙΤΗΜΑ ΕΠΙΚΟΙΝΩΝΙΑΣ\n\nΥπηρεσία: ${service}\nΌνομα: ${name}\nEmail: ${email}\nΤηλέφωνο: ${phone}\nΔιεύθυνση: ${address}`;
+    if (message.trim()) {
+      text += `\nΜήνυμα: ${message}`;
+    }
+
+    // Save text globally for sending via SMS/Viber
+    window.copiedRegistrationText = text;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById('copyMessage').style.display = 'block';
+      document.getElementById('sendButtons').style.display = 'block';
+    }).catch(err => {
+      alert('Αποτυχία αντιγραφής στο πρόχειρο: ' + err);
+    });
+  }
+
+  function sendSMS() {
+    const encoded = encodeURIComponent(window.copiedRegistrationText || '');
+    window.location.href = `sms:+35796554887?body=${encoded}`;
+  }
+
+  function sendViber() {
+    const encoded = encodeURIComponent(window.copiedRegistrationText || '');
+    window.location.href = `viber://forward?text=${encoded}`;
+  }
+</script>
+
+</body>
+</html>
